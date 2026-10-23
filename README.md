@@ -213,7 +213,7 @@ LeJus-Game/
 ## 9. 개발 로드맵
 
 마일스톤별 상세 작업과 완료 기준은 **[docs/ROADMAP.md](docs/ROADMAP.md)**, 실제 진행 순서와 상태는 **[docs/PLAN.md](docs/PLAN.md)** 에 있습니다.
-개발 환경 설정(Godot 설치, 테스트·빌드 실행)은 **[docs/SETUP.md](docs/SETUP.md)** 를 참고하세요.
+게임 실행 방법(빌드 받기, 에디터 실행, 조작법, 테스트)은 **[docs/RUN.md](docs/RUN.md)**, 개발 환경 설정과 프로젝트 설정 값은 **[docs/SETUP.md](docs/SETUP.md)** 를 참고하세요.
 
 | 단계 | 목표 |
 | --- | --- |
