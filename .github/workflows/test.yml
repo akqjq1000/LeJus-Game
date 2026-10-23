@@ -1,0 +1,33 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.7.2"
+
+jobs:
+  gut:
+    name: GUT unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: ./.github/actions/setup-godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+
+      - name: Import project
+        run: godot --headless --import
+
+      - name: Run tests
+        run: godot --headless -s addons/gut/gut_cmdln.gd

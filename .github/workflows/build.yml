@@ -1,0 +1,112 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # 내보내기 설정을 바꾸는 PR에서는 병합 전에 빌드가 되는지 확인한다.
+  pull_request:
+    paths:
+      - export_presets.cfg
+      - project.godot
+      - .github/workflows/build.yml
+      - .github/actions/setup-godot/**
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.7.2"
+
+jobs:
+  desktop:
+    name: Export ${{ matrix.preset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - preset: Windows
+            dir: windows
+          - preset: Linux
+            dir: linux
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: ./.github/actions/setup-godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          templates: "true"
+
+      - name: Import project
+        run: godot --headless --import
+
+      - name: Export
+        run: |
+          mkdir -p build/${{ matrix.dir }}
+          godot --headless --export-release "${{ matrix.preset }}"
+          ls -la build/${{ matrix.dir }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LeJus-${{ matrix.dir }}-${{ github.sha }}
+          path: build/${{ matrix.dir }}
+          if-no-files-found: error
+
+  android:
+    name: Export Android (debug APK)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: ./.github/actions/setup-godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          templates: "true"
+
+      # 스토어 서명은 M7에서 Secrets로 추가한다. 지금은 CI에서 매번 만드는 디버그 키로 서명한다.
+      - name: Configure Android SDK and debug keystore
+        run: |
+          keytool -genkeypair -v -keystore "$RUNNER_TEMP/debug.keystore" \
+            -storepass android -keypass android -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$RUNNER_TEMP/debug.keystore" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android" >> "$GITHUB_ENV"
+          minor="${GODOT_VERSION%.*}"
+          mkdir -p ~/.config/godot
+          cat > ~/.config/godot/editor_settings-${minor}.tres <<SETTINGS
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "$ANDROID_HOME"
+          export/android/java_sdk_path = "$JAVA_HOME"
+          SETTINGS
+
+      - name: Import project
+        run: godot --headless --import
+
+      - name: Export
+        run: |
+          mkdir -p build/android
+          godot --headless --export-debug "Android"
+          ls -la build/android
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LeJus-android-${{ github.sha }}
+          path: build/android/*.apk
+          if-no-files-found: error
