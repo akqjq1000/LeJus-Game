@@ -52,8 +52,8 @@
 
 | 단계 | 브랜치 | 세부 작업 | 테스트 | 상태 |
 | --- | --- | --- | --- | --- |
-| 1 | `art/placeholder-sprites` | 궁수(idle·walk·shoot), 몬스터 1종(walk·hit·die), 화살 16×16 스프라이트 | 실행 확인 | ⬜ |
-| 1 | `feature/command-input` | `scripts/input/command_buffer.gd`: 입력+시각 기록, 0.4초 타임아웃, 긴 커맨드 우선 매칭(`→←→` vs `→→`), 매칭 시그널 | **단위 테스트 필수**: 각 커맨드 인식, 타임아웃 초기화, 겹치는 커맨드 구분 | ⬜ |
+| 1 | `art/placeholder-sprites` | 궁수(idle·walk·shoot), 몬스터 1종(walk·hit·die), 화살 16×16 스프라이트. `tools/gen_placeholder_sprites.py`로 생성해 `assets/sprites/placeholder/`에 둠(LFS 제외) | 애니메이션 이름·프레임 수 테스트 | ✅ |
+| 1 | `feature/command-input` | `scripts/input/command_buffer.gd`: 입력+시각 기록, 0.4초 타임아웃, 긴 커맨드 우선 매칭(`→←→` vs `→→`), 매칭 시그널. 씬에서는 `CommandInput` 노드로 사용 | **단위 테스트 필수**: 각 커맨드 인식, 타임아웃 초기화, 겹치는 커맨드 구분 | ✅ |
 | 2 | `feature/player-auto-move` | `scenes/player/archer.tscn`(CharacterBody2D), 진행 방향 자동 전진, 사거리 내 적 감지 시 정지 | 정지 조건 단위 테스트 | ⬜ |
 | 2 | `feature/enemy-ai` | 상태 머신(배회·접근·후퇴), 데이터(`data/enemies/*.tres`)로 속도·사거리 분리 | 상태 전이 단위 테스트 | ⬜ |
 | 3 | `feature/combat-core` | `Hurtbox/Hitbox`, 체력 컴포넌트, 사망 처리, 스포너(간격·최대 수) | 데미지 계산 단위 테스트 | ⬜ |
