@@ -138,7 +138,7 @@
 
 | 영역 | 추천 | 비고 |
 | --- | --- | --- |
-| 게임 엔진 | **Godot 4.x** | 안정 버전(LTS 성격의 최신 minor) 고정 사용 |
+| 게임 엔진 | **Godot 4.7.2** | 안정 버전 고정 사용 (CI와 동일) |
 | 언어 | **GDScript** | 성능이 중요한 부분만 필요 시 C# 또는 GDExtension(C++) |
 | 도트 그래픽 / 애니메이션 | **Aseprite** | 스프라이트 시트 내보내기 → Godot `AnimatedSprite2D` / `AnimationPlayer` |
 | 맵 제작 | Godot **TileMapLayer** (또는 **LDtk**) | 광장·사냥터·보스방 타일 구성 |
@@ -147,7 +147,7 @@
 | 저장 | 로컬 저장 (`user://` + `ConfigFile`/JSON) | 솔로 플레이라 초기엔 서버 불필요 |
 | 버전 관리 | **Git + GitHub**, 바이너리 에셋은 **Git LFS** | `.png`, `.aseprite`, `.wav`, `.ogg` 등 |
 | CI/CD | **GitHub Actions** + Godot 헤드리스 export | PC/Android 빌드 자동화 |
-| 테스트 | **GUT** 또는 **gdUnit4** | 커맨드 판정·데미지 계산 단위 테스트 |
+| 테스트 | **GUT** 9.7.1 | 커맨드 판정·데미지 계산 단위 테스트 |
 | 배포 | PC: **Steam / itch.io**, 모바일: **Google Play / App Store** | |
 
 ### 추후 필요 시 추가
@@ -189,6 +189,8 @@
 ```
 LeJus-Game/
 ├── project.godot
+├── export_presets.cfg  # Windows / Linux / Android 내보내기 설정
+├── addons/gut/         # 테스트 프레임워크 (GUT)
 ├── assets/
 │   ├── sprites/        # 캐릭터, 몬스터, 이펙트 (.png / .aseprite)
 │   ├── tiles/          # 맵 타일셋
@@ -203,14 +205,15 @@ LeJus-Game/
 │   ├── skills/         # 백스탭, 돌진, 멀티샷, 화살비
 │   └── systems/        # 재화, 저장, 스탯
 ├── data/               # 스킬·몬스터·아이템 수치 (.tres / .json)
-└── tests/
+└── tests/unit/         # GUT 단위 테스트 (test_*.gd)
 ```
 
 ---
 
 ## 9. 개발 로드맵
 
-마일스톤별 상세 작업과 완료 기준은 **[docs/ROADMAP.md](docs/ROADMAP.md)** 에 있습니다.
+마일스톤별 상세 작업과 완료 기준은 **[docs/ROADMAP.md](docs/ROADMAP.md)**, 실제 진행 순서와 상태는 **[docs/PLAN.md](docs/PLAN.md)** 에 있습니다.
+개발 환경 설정(Godot 설치, 테스트·빌드 실행)은 **[docs/SETUP.md](docs/SETUP.md)** 를 참고하세요.
 
 | 단계 | 목표 |
 | --- | --- |
